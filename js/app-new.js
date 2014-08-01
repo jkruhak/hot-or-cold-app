@@ -15,117 +15,137 @@ $(document).ready(function() {
   		$(".overlay").fadeOut(1000);
   	});
 
-  	$(".button").click(runHotOrCold);
+  	/*--- Run the game ---*/
+  	$(".button").click(validateEntry);
 
+  	/*--- Start new game ---*/
   	$(".new").click(newGame);
 
 });
 
 var randomNumber = Math.floor(Math.random() * 100 + 1);
 
+/*--- Validate user entry ---*/
+var validateEntry = function () {
+	var numVal = $('#userGuess').val();
+
+	if (numVal === "") {
+		alert("Please enter a number");
+	}
+	else if (numVal < 0) {
+		alert("Please enter a positive number");
+	}
+	else if (numVal > 100) {
+		alert("Please enter a number between 1 and 100");
+	}
+	else if (!numVal.match(/^\d+$/)){
+		alert("Please enter a number between 1 and 100");
+	}
+	else {
+		runHotOrCold();
+	}
+};
+
 /*--- Start a new game ---*/
 var newGame = function() {
-	$(".clearfix").on("click", ".new", function() {
-		//clear random number and re-generate new one
-		
-		$("#feedback").text("Make your Guess!");
-		$("input#userGuess").val("");
-		$("span#count").text("0");
-		$("#guessList").empty();
-		generateNumber();
 
-	});
+	$("#feedback").text("Make your Guess!");
+	$("input#userGuess").val("");
+	$("span#count").text("0");
+	$("#guessList").empty();
 };
 
-
-
-//random number function
+/*--- Generate random number ---*/
 var generateNumber = function() {
-	console.log(randomNumber);
-	return randomNumber;
+	var newNumber = randomNumber;
+	console.log(newNumber);
+	return newNumber;
 };
 
-//runGame function
-var runHotOrCold = function() {
-	//console.log(generateNumber());
+/*--- Amount of guesses by user ---*/
+var guessCount = function() {
+	var countGuesses = $("#guessList li").length;
+	$("#count").text(countGuesses);
+}
+
+var greaterThanZero = function() {
 
 	var enteredNumber = Math.floor(document.getElementById("userGuess").value);
-	//var randomNumber = generateNewNumber();
-	console.log("entered number" + enteredNumber);
-	console.log("random number" + randomNumber);
-
 	var randomToEnteredDiff = randomNumber-enteredNumber;
-	//var randomToEnteredDiffConv = Math.floor(randomToEnteredDiff);
-	//var enteredToRandomDiff = Math.abs(randomToEnteredDiff);
-	console.log("difference random to entered" + randomToEnteredDiff);
-	//console.log("difference entered to random" + enteredToRandomDiff);
 
+	if (randomToEnteredDiff >= 50) {
+		$("#feedback").text("You are ice cold");
+		return false;
+	}
+	else if (randomToEnteredDiff >= 30) {
+		$("#feedback").text("You are cold");
+		return false;
+	}
+	else if (randomToEnteredDiff >= 20) {
+		$("#feedback").text("You are warm");
+		return false;
+	}
+	else if (randomToEnteredDiff >= 10) {
+		$("#feedback").text("You are hot");
+		return false;
+	}
+	else if (randomToEnteredDiff >= 1) {
+		$("#feedback").text("You are very hot");
+		return false;
+	}
+	else {
+		$("#feedback").text("YOU ARE CORRECT!");
+		return true;
+	}
+};
 
+var lessThanZero = function() {
+
+	var enteredNumber = Math.floor(document.getElementById("userGuess").value);
+	var randomToEnteredDiff = randomNumber-enteredNumber;
+
+	var converted = Math.abs(randomToEnteredDiff);
+
+	if (converted >= 50) {
+		$("#feedback").text("You are ice cold");
+		return false;
+	} 
+	else if (converted >= 30) {
+		$("#feedback").text("You are cold");
+		return false;
+	}
+	else if (converted >= 20) {
+		$("#feedback").text("You are warm");
+		return false;
+	}
+	else if (converted >= 10) {
+		$("#feedback").text("You are hot");
+		return false;
+	}
+	else if (converted >= 1) {
+		$("#feedback").text("You are very hot");
+		return false;
+	}
+	else {
+		$("#feedback").text("YOU ARE CORRECT!");
+		return true;
+	}	
+};
+
+/*--- Hot or Cold App ---*/
+var runHotOrCold = function() {
+
+	var enteredNumber = Math.floor(document.getElementById("userGuess").value);
+	var randomToEnteredDiff = randomNumber-enteredNumber;
+	
+	$("#guessList").append("<li>"+enteredNumber+"</li>");
+
+	guessCount();
+	
 	if (randomToEnteredDiff >= 0) {
-		if (randomToEnteredDiff >= 50) {
-			$("#feedback").text("You are ice cold");
-			return false;
-		}
-
-		else if (randomToEnteredDiff >= 30) {
-			$("#feedback").text("You are cold");
-			return false;
-		}
-
-		else if (randomToEnteredDiff >= 20) {
-			$("#feedback").text("You are warm");
-			return false;
-		}
-
-		else if (randomToEnteredDiff >= 10) {
-			$("#feedback").text("You are hot");
-			return false;
-		}
-
-		else if (randomToEnteredDiff >= 1) {
-			$("#feedback").text("You are very hot");
-			return false;
-		}
-
-		else {
-			$("#feedback").text("YOU ARE CORRECT!");
-			return true;
-		}
+		greaterThanZero();
 
 	} else {
-		var converted = Math.abs(randomToEnteredDiff);
-
-		console.log("the number was negative" + converted);
-
-		if (converted >= 50) {
-			$("#feedback").text("You are ice cold");
-			return false;
-		}
-
-		else if (converted >= 30) {
-			$("#feedback").text("You are cold");
-			return false;
-		}
-
-		else if (converted >= 20) {
-			$("#feedback").text("You are warm");
-			return false;
-		}
-
-		else if (converted >= 10) {
-			$("#feedback").text("You are hot");
-			return false;
-		}
-
-		else if (converted >= 1) {
-			$("#feedback").text("You are very hot");
-			return false;
-		}
-
-		else {
-			$("#feedback").text("YOU ARE CORRECT!");
-			return true;
-		}
-		
+		lessThanZero();
 	}
 };
