@@ -1,7 +1,7 @@
-	$(document).ready(function() {
+$(document).ready(function() {
 
 	$(window).load(function() {
-		generateRandomNumber();
+		newGame();
 	});
 
 	/*--- Display information modal box ---*/
@@ -16,12 +16,21 @@
   	});
 
   	/*--- Run the game ---*/
-  	$(".button").click(validateEntry);
+  	$(".button").click(function() { 
+  		validateEntry();
+  		guessCount();
+  	});
 
   	/*--- Start new game ---*/
-  	$(".new").click(newGame);
+  	$(".new").click(function() {
+  		newGame();
+  	});
 
 });
+
+var randomNumber;
+var enteredNumber;
+var randomToEnteredDiff;
 
 /*--- Validate user entry ---*/
 var validateEntry = function () {
@@ -54,26 +63,19 @@ var randomArray = function() {
 
 var generateRandomNumber = function() {
 	var arrayNumber = randomArray();
-	var newRandomNumber = arrayNumber[Math.floor(Math.random() * 100)];
-	return newRandomNumber;
-};
-
-var randomNumberGenerate = function() {
-	var randomNumber = generateRandomNumber();
+	var randomNumber = arrayNumber[Math.floor(Math.random() * 100)];
+	
+	console.log(randomNumber);
 	return randomNumber;
 };
 
 /*--- Start a new game ---*/
 var newGame = function() {
-	
+	randomNumber = generateRandomNumber();
 	$("#feedback").text("Make your Guess!");
 	$("input#userGuess").val("");
 	$("span#count").text("0");
 	$("#guessList").empty();
-
-	console.log(randomNumberGenerate());
-	randomNumberGenerate();
-	
 };
 
 /*--- Amount of guesses by user ---*/
@@ -83,81 +85,50 @@ var guessCount = function() {
 };
 
 
-console.log(generateRandomNumber());
-
-var equation = function() {
-	var number = randomNumberGenerate();
-	
-	var enteredNumber = Math.floor(document.getElementById("userGuess").value);
-	var randomToEnteredDiff = number-enteredNumber;
-	return randomToEnteredDiff;
-};
-
 /*--- Hot or Cold App ---*/
 var runHotOrCold = function() {	
-	
-	var enteredNumber = Math.floor(document.getElementById("userGuess").value);
-	var equationResult = randomNumberGenerate();
 
+	enteredNumber = $("#userGuess").val();
 
-
-	var fromNegToPos = Math.abs(equationResult);
-	
-	
 	$("#guessList").append("<li>"+enteredNumber+"</li>");
 
-	guessCount();
-	
-	if (equationResult >= 0) {
-		if (equationResult >= 50) {
-			$("#feedback").text("You are ice cold");
-			return false;
+	if (Math.floor(randomNumber-enteredNumber) >= 0) {
+		if (Math.floor(randomNumber-enteredNumber) >= 50) {
+			$("#feedback").text("You are ice cold");	
 		}
-		else if (equationResult >= 30) {
-			$("#feedback").text("You are cold");
-			return false;
+		else if (Math.floor(randomNumber-enteredNumber) >= 30) {
+			$("#feedback").text("You are cold");		
 		}
-		else if (equationResult >= 20) {
-			$("#feedback").text("You are warm");
-			return false;
+		else if (Math.floor(randomNumber-enteredNumber) >= 20) {
+			$("#feedback").text("You are warm");		
 		}
-		else if (equationResult >= 10) {
-			$("#feedback").text("You are hot");
-			return false;
+		else if (Math.floor(randomNumber-enteredNumber) >= 10) {
+			$("#feedback").text("You are hot");		
 		}
-		else if (equationResult >= 1) {
-			$("#feedback").text("You are very hot");
-			return false;
+		else if (Math.floor(randomNumber-enteredNumber) >= 1) {
+			$("#feedback").text("You are very hot");		
 		}
 		else {
-			$("#feedback").text("YOU ARE CORRECT!");
-			return true;
+			$("#feedback").text("YOU ARE CORRECT!");		
 		}
-
 	} else {
-		if (fromNegToPos >= 50) {
-			$("#feedback").text("You are ice cold");
-			return false;
+		if (Math.abs(randomNumber-enteredNumber) >= 50) {
+		$("#feedback").text("You are ice cold");
 		} 
-		else if (fromNegToPos >= 30) {
+		else if (Math.abs(randomNumber-enteredNumber) >= 30) {
 			$("#feedback").text("You are cold");
-			return false;
 		}
-		else if (fromNegToPos >= 20) {
+		else if (Math.abs(randomNumber-enteredNumber) >= 20) {
 			$("#feedback").text("You are warm");
-			return false;
 		}
-		else if (fromNegToPos >= 10) {
+		else if (Math.abs(randomNumber-enteredNumber) >= 10) {
 			$("#feedback").text("You are hot");
-			return false;
 		}
-		else if (fromNegToPos >= 1) {
+		else if (Math.abs(randomNumber-enteredNumber) >= 1) {
 			$("#feedback").text("You are very hot");
-			return false;
 		}
 		else {
 			$("#feedback").text("YOU ARE CORRECT!");
-			return true;
 		}
 	}
 };
